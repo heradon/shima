@@ -1,2 +1,7 @@
 /touch-panel.pro.use*
 *.qm
+/Makefile
+*.Debug
+*.Release
+*.pro.user
+ui_*.h
