@@ -1,7 +1,11 @@
 /touch-panel.pro.use*
-*.qm
+**/*.qm
 /Makefile
-*.Debug
-*.Release
-*.pro.user
-ui_*.h
+**/*.Debug
+**/*.Release
+**/*.pro.user
+**/ui_*.h
+**/*.o
+**/moc_*.cpp
+**/qrc_*.cpp
+**/*.exe
