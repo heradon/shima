@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/intern">
+        <file>sternenhimmel.jpg</file>
+        <file>stylesheet.qss</file>
+    </qresource>
+    <qresource prefix="/sounds">
+        <file>sinewave.mp3</file>
+    </qresource>
+</RCC>

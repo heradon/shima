@@ -1,0 +1,12 @@
+ArchLinux:
+    gstreamer-plugins   || pacman -S gstreamer-plugins
+    boost               || pacman -S boost
+    base-devel          || pacman -S base-devel
+    qt5                 || pacman -S qt5
+    qmake               || pacman -S qmake
+
+Debian 7:
+    Does not compile on Debian 7 you have Qt4
+
+OTHER:
+	lrelease file.pro (Do language files from ts to qm)
