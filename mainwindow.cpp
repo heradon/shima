@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "music.h"
-#include "alarm.h"
 #include "calendar.h"
 
 #include <cstring>
@@ -16,7 +14,8 @@ MainWindow::MainWindow(Config cfg, QWidget *parent)
     , timer(new QTimer(this))
     , config(std::move(cfg))
     , configRefresh(new QTimer(this))
-    , alarmWindow(new Alarm(alarmer, config, this))
+    , musicWindow(new Music(config, this))
+    , alarmWindow(new Alarm(alarmer, musicWindow, config, this))
 {
     ui->setupUi(this);
 
@@ -79,9 +78,7 @@ void MainWindow::set_alarm_status(bool status)
 
 void MainWindow::on_music_button_clicked()
 {
-    std::unique_ptr<Music> musicWindow (new Music (config));
-    musicWindow->setModal(true);
-    musicWindow->exec();
+    musicWindow->show();
 }
 
 void MainWindow::on_alarm_button_clicked()
