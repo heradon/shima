@@ -2,6 +2,7 @@
 #define ALARM_H
 
 #include "alarmpersistence.h"
+#include "music.h"
 
 #include <memory>
 #include <QDialog>
@@ -15,7 +16,7 @@ class Alarm : public QDialog
     Q_OBJECT
 
 public:
-    explicit Alarm(AlarmPersistence* alarmer, Config cfg, QWidget* parent = nullptr);
+    explicit Alarm(AlarmPersistence* alarmer, Music* player, Config cfg, QWidget* parent = nullptr);
     ~Alarm();
 
 signals:
@@ -23,6 +24,8 @@ signals:
 
 public slots:
     void on_config_update();
+    void on_alarm_fired();
+    void on_alarm_stopped();
 
 private slots:
     void on_h_plus_clicked();
@@ -45,6 +48,7 @@ private:
     Ui::Alarm* ui;
     AlarmPersistence* alarmer;
     Config config;
+    Music* player;
 };
 
 #endif // ALARM_H

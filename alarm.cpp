@@ -7,17 +7,20 @@
 
 #include <cmath>
 
-Alarm::Alarm(AlarmPersistence* alarmer, Config cfg, QWidget *parent)
+Alarm::Alarm(AlarmPersistence* alarmer, Music* player, Config cfg, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::Alarm)
     , alarmer(alarmer)
     , config(cfg)
+    , player(player)
 {
     ui->setupUi(this);
 
     on_config_update();
 
     connect(alarmer, SIGNAL(timeout()), this, SLOT(on_timer()));
+    connect(alarmer, SIGNAL(alarm_fired()), this, SLOT(on_alarm_fired()));
+    connect(alarmer, SIGNAL(alarm_stopped()), this, SLOT(on_alarm_stopped()));
 }
 
 Alarm::~Alarm()
@@ -160,4 +163,14 @@ void Alarm::on_config_update()
     ui->volume->setText(QString("%1").arg(config.cget().volume, 3, 10, QChar('0')));
     // load alarm activity from persistence class
     setAlarmActivity(alarmer->isActive());
+}
+
+void Alarm::on_alarm_fired()
+{
+    player->suspend_track();
+}
+
+void Alarm::on_alarm_stopped()
+{
+    player->unsuspend_track();
 }
