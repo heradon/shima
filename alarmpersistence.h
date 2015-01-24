@@ -27,6 +27,8 @@ public:
 
 signals:
     void timeout();
+    void alarm_fired();
+    void alarm_stopped();
 
 public slots:
     void stop_alarm();
