@@ -10,6 +10,9 @@
 #include <sstream>
 #include <fstream>
 
+// DEBUG!
+const int deltaMinute = 5;
+
 AlarmPersistence::AlarmPersistence(Config cfg, QObject *parent)
     : QObject(parent)
     , timer(new QTimer(this))
@@ -126,6 +129,7 @@ void AlarmPersistence::start_alarm()
         // force exit
         exit(1);
     }
+    emit alarm_fired();
 }
 
 void AlarmPersistence::save()
@@ -171,7 +175,7 @@ void AlarmPersistence::increment_hour()
 
 void AlarmPersistence::increment_minute()
 {
-    alarmPoint.second += 5;
+    alarmPoint.second += deltaMinute;
     if (alarmPoint.second == 60)
         alarmPoint.second = 0;
     save();
@@ -189,7 +193,7 @@ void AlarmPersistence::decrement_minute()
 {
     if (alarmPoint.second == 0)
         alarmPoint.second = 60;
-    alarmPoint.second -= 5;
+    alarmPoint.second -= deltaMinute;
     save();
 }
 
@@ -264,5 +268,6 @@ void AlarmPersistence::stop_alarm()
         showCritical(exc);
         exit(1);
     }
+    emit alarm_stopped();
 }
 
