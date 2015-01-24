@@ -4,10 +4,9 @@
 #include "config.h"
 #include "customplaylist.h"
 #include "fmodwrap.h"
+#include "directorylistmodel.h"
 
 #include <QDialog>
-#include <QMediaPlayer>
-#include <QMediaPlaylist>
 #include <QStringListModel>
 #include <QTimer>
 
@@ -27,6 +26,8 @@ public slots:
     void scan_tracks();
     void play_track();
     void pause_track();
+    void suspend_track();
+    void unsuspend_track();
     void toggle_track_playback();
     void next_track(bool circular = false);
     void previous_track();
@@ -44,21 +45,23 @@ private slots:
     void on_slider_sliderPressed();
     void on_music_next_clicked();
     void on_music_forward_clicked();
-
     void on_window_back_clicked();
+    void on_enter_clicked();
 
 private: // private member functions
+    void player_rescan();
 
 private: // private members
     Ui::Music *ui;
     FMODSound::System fsys;
     FMODSound::MediaPlayer player;
-    QStringListModel* trackListModel;
+    DirectoryListModel trackListModel;
     QStringList realTrackList;
     Config config;
     Track enqueued;
     QTimer* trackPositionUpdateTimer;
     bool sliderBlock;
+    bool suspended;
 };
 
 #endif // MUSIC_H

@@ -6,6 +6,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QFileInfo>
+#include <QDebug>
 
 #include <cmath>
 
@@ -14,7 +15,13 @@ Music::Music(Config cfg, QWidget *parent)
     , ui(new Ui::Music)
     , fsys()
     , player(&fsys)
-    , trackListModel(new QStringListModel(this))
+    , trackListModel(
+          []() -> QStringList {
+              QStringList filter;
+              filter << "*.mp3" << "*.flac" << "*.ogg" << "*.wma";
+              return filter;
+          }()
+      )
     , config(std::move(cfg))
     , enqueued{"", "", ""}
     , trackPositionUpdateTimer(new QTimer(this))
@@ -22,15 +29,15 @@ Music::Music(Config cfg, QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->tracklist->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->tracklist->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->tracklist->setModel(trackListModel);
+    ui->tracklist->setModel(&trackListModel);
 
     connect(ui->vol_down, SIGNAL(clicked()), this, SLOT(decrease_volume()));
     connect(ui->vol_up, SIGNAL(clicked()), this, SLOT(increase_volume()));
     connect(trackPositionUpdateTimer, SIGNAL(timeout()), this, SLOT(on_timer()));
 
     scan_tracks();
+
+    player.setVolume(std::min(100.f, (float)config.cget().musicVolume / 100.f));
 
     trackPositionUpdateTimer->start(500);
 }
@@ -47,15 +54,9 @@ void Music::scan_tracks()
 
     try
     {
-        QStringList filter;
-        filter << "*.mp3";
-        auto list = QDir(pathBase).entryList(filter);
-        player.clear();
-        for (auto const& i : list)
-        {
-            player.add((pathBase + "/" + i).toStdString());
-        }
-        trackListModel->setStringList(list);
+        trackListModel.loadDirectory(pathBase);
+        ui->tracklist->repaint();
+        player_rescan();
     }
     catch (...)
     {
@@ -90,6 +91,24 @@ void Music::pause_track()
     }
 }
 
+void Music::suspend_track()
+{
+    if (player.isPlaying())
+    {
+        suspended = true;
+        pause_track();
+    }
+}
+
+void Music::unsuspend_track()
+{
+    if (suspended)
+    {
+        suspended = false;
+        play_track();
+    }
+}
+
 void Music::toggle_track_playback()
 {
     try
@@ -109,7 +128,7 @@ void Music::next_track(bool circular)
     {
         player.next(circular);
         ui->slider->setMaximum(player.getLength());
-        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex(), 0));
+        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex() + trackListModel.getDirectoryCount(), 0));
     }
     catch(FMODSound::Error const& exc)
     {
@@ -123,7 +142,7 @@ void Music::previous_track()
     {
         player.previous(true);
         ui->slider->setMaximum(player.getLength());
-        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex(), 0));
+        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex() + trackListModel.getDirectoryCount(), 0));
     }
     catch(FMODSound::Error const& exc)
     {
@@ -145,14 +164,22 @@ void Music::load_track(int index)
 
 void Music::increase_volume()
 {
-    float vol = std::min(100.f, player.getVolume()*100.f + 5.f);
-    player.setVolume(vol / 100.f);
+    double vol = player.getVolume();
+    vol += 0.05;
+    vol = std::min(1., vol);
+
+    player.setVolume(vol);
+    config.get()()->musicVolume = (int)(vol * 100.);
 }
 
 void Music::decrease_volume()
 {
-    float vol = std::min(100.f, player.getVolume()*100.f - 5.f);
-    player.setVolume(vol / 100.f);
+    double vol = player.getVolume();
+    vol -= 0.05;
+    vol = std::max(0., vol);
+
+    player.setVolume(vol);
+    config.get()()->musicVolume = (int)(vol * 100.);
 }
 
 void Music::on_rescan_button_clicked()
@@ -165,7 +192,15 @@ void Music::on_tracklist_doubleClicked(const QModelIndex &index)
     on_tracklist_pressed(index);
     try
     {
-        play_track();
+        auto info = trackListModel.getFileInfo(index);
+        if (info.isDir())
+        {
+            trackListModel.changeDirectory(index);
+            ui->tracklist->selectionModel()->clearSelection();
+            player_rescan();
+        }
+        else
+            play_track();
     }
     catch (FMODSound::Error const& exc)
     {
@@ -177,7 +212,9 @@ void Music::on_tracklist_pressed(const QModelIndex &index)
 {
     try
     {
-        load_track(index.row());
+        auto info = trackListModel.getFileInfo(index);
+        if (info.isFile())
+            load_track(index.row() - trackListModel.getDirectoryCount());
     }
     catch (FMODSound::Error const& exc)
     {
@@ -233,4 +270,22 @@ void Music::on_music_forward_clicked()
 void Music::on_window_back_clicked()
 {
     close();
+}
+
+void Music::player_rescan()
+{
+    player.clear();
+    for (int i = 0; i != trackListModel.rowCount(); ++i)
+    {
+        auto info = trackListModel.getFileInfo(i);
+        if (info.isFile())
+        {
+            player.add(info.absoluteFilePath().toStdString());
+        }
+    }
+}
+
+void Music::on_enter_clicked()
+{
+    on_tracklist_doubleClicked(ui->tracklist->selectionModel()->selection().first().indexes().first());
 }
