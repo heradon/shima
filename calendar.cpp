@@ -12,3 +12,8 @@ Calendar::~Calendar()
 {
     delete ui;
 }
+
+void Calendar::on_pushButton_clicked()
+{
+    close();
+}

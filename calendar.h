@@ -15,6 +15,9 @@ public:
     explicit Calendar(QWidget *parent = 0);
     ~Calendar();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::Calendar *ui;
 };
