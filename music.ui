@@ -154,36 +154,13 @@
     <string>RESCAN</string>
    </property>
   </widget>
-  <widget class="QLabel" name="files_found">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>20</y>
-     <width>321</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>24</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>0 files found</string>
-   </property>
-  </widget>
   <widget class="QListView" name="tracklist">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>80</y>
+     <y>70</y>
      <width>781</width>
-     <height>251</height>
+     <height>271</height>
     </rect>
    </property>
    <property name="font">
@@ -195,6 +172,12 @@
    </property>
    <property name="styleSheet">
     <string notr="true"/>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOn</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
    </property>
    <property name="editTriggers">
     <set>QAbstractItemView::NoEditTriggers</set>
@@ -206,7 +189,7 @@
      <x>720</x>
      <y>10</y>
      <width>71</width>
-     <height>61</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="font">
@@ -227,9 +210,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>340</y>
+     <y>350</y>
      <width>781</width>
-     <height>41</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -258,6 +241,29 @@
    </property>
    <property name="tickInterval">
     <number>0</number>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="enter">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>10</y>
+     <width>171</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>24</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>ENTER</string>
    </property>
   </widget>
  </widget>
