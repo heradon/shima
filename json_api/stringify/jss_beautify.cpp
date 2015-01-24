@@ -6,7 +6,7 @@ namespace JSON
     {
         std::stringstream sstr;
         int tab = pretab;
-        bool was_closed;
+        bool was_closed = false;
         for (auto const& i : str)
         {
             if (i == '{')
