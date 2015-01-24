@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui multimedia
+QT       += core gui
 QMAKE_CXXFLAGS = -std=c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -54,7 +54,8 @@ SOURCES += main.cpp\
     system_menu.cpp \
     system_info.cpp \
     fmodwrap.cpp \
-    common_errors.cpp
+    common_errors.cpp \
+    directorylistmodel.cpp
 
 HEADERS  += mainwindow.h \
     music.h \
@@ -129,7 +130,8 @@ HEADERS  += mainwindow.h \
     system_info.h \
     fmodresult.h \
     fmodwrap.h \
-    common_errors.h
+    common_errors.h \
+    directorylistmodel.h
 
 FORMS    += mainwindow.ui \
     music.ui \
@@ -147,5 +149,4 @@ RESOURCES += \
 
 DISTFILES += \
     COMPILE.txt \
-    stylesheet.qss \
     keepalive.sh
