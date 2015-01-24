@@ -24,10 +24,11 @@ struct ConfigContent : public JSON::FusionStruct <ConfigContent>
     bool alarmActive;
     unsigned short volume;
     unsigned short snoozeTime;
+    unsigned short musicVolume;
 
-    ConfigContent(std::string musicPath = "./music", std::string alarmFile = "",
+    ConfigContent(std::string musicPath = "./music", std::string alarmFile = "./sinewave.mp3",
                   std::pair <short, short> alarmPoint = {0, 0}, bool alarmActive = false, unsigned short volume = 80,
-                  unsigned short snoozeTime = 5);
+                  unsigned short snoozeTime = 5, unsigned short musicVolume = 50);
 };
 
 namespace __INTERNAL
@@ -44,6 +45,7 @@ BOOST_FUSION_ADAPT_STRUCT
     (bool, alarmActive)
     (unsigned short, volume)
     (unsigned short, snoozeTime)
+    (unsigned short, musicVolume)
 )
 
 class ConfigContentWrapper

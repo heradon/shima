@@ -5,6 +5,8 @@
 #include <streambuf>
 
 #include <QMessageBox>
+#include <QFile>
+#include <QFileInfo>
 
 Config::Config(std::string const& fileName)
     : fileName_(fileName)
@@ -46,6 +48,8 @@ void Config::load()
             msgBox.setText(QString("Config has been reset, it was corrupted.\n") + QString::fromStdString(exc.what()));
             msgBox.exec();
 
+            QFile::copy(QString::fromStdString(fileName_), QFileInfo(QString::fromStdString(fileName_)).absolutePath() + "/config_backup.json");
+
             save();
         }
         *filePersistence_.get() = content;
@@ -78,12 +82,14 @@ std::shared_ptr<ConfigContent> ConfigContentWrapper::operator()()
     return parent_->filePersistence_;
 }
 
-ConfigContent::ConfigContent(std::string musicPath, std::string alarmFile, std::pair<short, short> alarmPoint, bool alarmActive, unsigned short volume, unsigned short snoozeTime)
+ConfigContent::ConfigContent(std::string musicPath, std::string alarmFile, std::pair<short, short> alarmPoint, bool alarmActive,
+                             unsigned short volume, unsigned short snoozeTime, unsigned short musicVolume)
     : musicPath(std::move(musicPath))
     , alarmFile(std::move(alarmFile))
     , alarmPoint(alarmPoint)
     , alarmActive(alarmActive)
     , volume(volume)
     , snoozeTime(snoozeTime)
+    , musicVolume(musicVolume)
 {
 }
