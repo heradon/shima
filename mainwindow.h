@@ -4,6 +4,7 @@
 #include "config.h"
 #include "alarmpersistence.h"
 #include "alarm.h"
+#include "music.h"
 
 #include <QMainWindow>
 #include <QTimer>
@@ -39,6 +40,7 @@ private:
     QTimer* timer;
     Config config;
     QTimer* configRefresh;
+    Music* musicWindow;
     Alarm* alarmWindow;
 };
 
