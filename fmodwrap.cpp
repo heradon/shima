@@ -515,9 +515,9 @@ MediaPlayer::~MediaPlayer()
 void MediaPlayer::clear()
 {
     position_.reset();
-    if (curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPlaying())
-        curSound_.value()->stop();
-    curSound_.reset();
+    //if (curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPlaying())
+    //    curSound_.value()->stop();
+    //curSound_.reset();
     list_.clear();
 }
 //------------------------------------------------------------------------------------------
@@ -530,22 +530,40 @@ void MediaPlayer::play()
 {
     if (curSound_)
     {
-        if (curSound_.value()->isOpened() && curSound_.value()->isPaused())
+        auto playLambda = [this]()
+        {
+            curSound_.value()->play(true);
+            curSound_.value()->setVolume(volume_);
+            curSound_.value()->unpause();
+            currentPlayingPosition_ = position_.value();
+        };
+
+        if (position_ && currentPlayingPosition_ && position_.value() != currentPlayingPosition_.value())
+        {
+            if (curSound_.value()->isOpened())
+                stop();
+            curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.value()]));
+            playLambda();
+        }
+        else if (curSound_.value()->isOpened() && curSound_.value()->isPaused())
         {
             curSound_.value()->unpause();
         }
         else
         {
-            curSound_.value()->play(true);
-            curSound_.value()->setVolume(volume_);
-            curSound_.value()->unpause();
+            playLambda();
         }
     }
     else
     {
-        next();
-        if (position_)
-            play();
+        if (list_.empty())
+            return;
+
+        if (!position_)
+            position_ = 0;
+
+        curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.value()]));
+        play();
     }
 }
 //------------------------------------------------------------------------------------------
@@ -573,8 +591,6 @@ void MediaPlayer::next(bool rollOver)
         position_.value() = 0;
     }
 
-    stop();
-    curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.value()]));
     play();
 }
 //------------------------------------------------------------------------------------------
@@ -596,8 +612,6 @@ void MediaPlayer::previous(bool rollOver)
         position_.value() = list_.size() - 1;
     }
 
-    stop();
-    curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.value()]));
     play();
 }
 //------------------------------------------------------------------------------------------
@@ -609,7 +623,11 @@ void MediaPlayer::stop()
 //------------------------------------------------------------------------------------------
 void MediaPlayer::togglePause()
 {
-    if (curSound_ && curSound_.value()->isOpened())
+    if (position_ && currentPlayingPosition_ && position_.value() != currentPlayingPosition_.value())
+    {
+        play();
+    }
+    else if (curSound_ && curSound_.value()->isOpened())
     {
         if (curSound_.value()->isPaused())
             curSound_.value()->unpause();
@@ -649,7 +667,6 @@ void MediaPlayer::setIndex(std::size_t position)
     if (position_ < list_.size())
     {
         position_ = position;
-        curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.value()]));
     }
 }
 //------------------------------------------------------------------------------------------
@@ -678,6 +695,16 @@ unsigned int MediaPlayer::getLength() const
     if (curSound_)
         return curSound_.value()->getLength();
     return 0;
+}
+//------------------------------------------------------------------------------------------
+bool MediaPlayer::isPaused() const
+{
+    return curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPaused();
+}
+
+bool MediaPlayer::isPlaying() const
+{
+    return curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPlaying();
 }
 //------------------------------------------------------------------------------------------
 
