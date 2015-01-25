@@ -18,7 +18,7 @@ Music::Music(Config cfg, QWidget *parent)
     , trackListModel(
           []() -> QStringList {
               QStringList filter;
-              filter << "*.mp3" << "*.flac" << "*.ogg" << "*.wma";
+              filter << "*.mp3" << "*.flac" << "*.ogg" << "*.wma" << "*.pls" << "*.m3u";
               return filter;
           }()
       )
@@ -26,6 +26,7 @@ Music::Music(Config cfg, QWidget *parent)
     , enqueued{"", "", ""}
     , trackPositionUpdateTimer(new QTimer(this))
     , sliderBlock(false)
+    , suspended(false)
 {
     ui->setupUi(this);
 

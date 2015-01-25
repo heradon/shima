@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "config.h"
+#include "fmodwrap.h"
+#include "common_errors.h"
 
 #include <QApplication>
 #include <QFile>
@@ -24,8 +26,17 @@ int main(int argc, char *argv[])
     if (!QFile("./stylesheet.qss").exists())
         QFile::copy(":/intern/stylesheet.qss", "./stylesheet.qss");
 
-    MainWindow w(configOrigin);
-    w.show();
+    try {
+        MainWindow w(configOrigin);
 
-    return a.exec();
+        w.show();
+
+        return a.exec();
+    }
+    catch (FMODSound::Error& exc)
+    {
+        // showCritical(exc);
+    }
+
+    return 1;
 }
