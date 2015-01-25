@@ -152,7 +152,7 @@ namespace FMODSound
     private:
 
     public:
-        System(SpeakerMode speakerMode = FMOD_SPEAKERMODE_DEFAULT, int channelCount = 32);
+        System(FMOD_OUTPUTTYPE outputType = FMOD_OUTPUTTYPE_AUTODETECT, SpeakerMode speakerMode = FMOD_SPEAKERMODE_DEFAULT, int channelCount = 32);
         ~System();
 
         // mode can be: FMOD_DEFAULT, FMOD_SOFTWARE, FMOD_CREATECOMPRESSEDSAMPLE

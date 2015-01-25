@@ -413,7 +413,7 @@ std::shared_ptr <Sound> SoundArchive::getSubSound(int index)
     return std::shared_ptr <Sound> (new Sound(system_, sound, false, info_));
 }
 //##########################################################################################
-System::System(SpeakerMode speakerMode, int channelCount)
+System::System(FMOD_OUTPUTTYPE outputType, SpeakerMode speakerMode, int channelCount)
     : system_(nullptr)
     , version_(0u)
     , channelCount_(channelCount)
@@ -422,6 +422,7 @@ System::System(SpeakerMode speakerMode, int channelCount)
     TRY(FMOD_System_Create, &system_);
     TRY(FMOD_System_GetVersion, system_, &version_);
     //TRY(FMOD_System_SetSpeakerMode, system_, speakerMode);
+    setOutput(outputType);
     TRY(FMOD_System_Init, system_, channelCount, FMOD_INIT_NORMAL, NULL);
     update();
 }

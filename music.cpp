@@ -13,7 +13,7 @@
 Music::Music(Config cfg, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::Music)
-    , fsys()
+    , fsys(FMODSound::stringToOutputType(cfg.cget().deviceName))
     , player(&fsys)
     , trackListModel(
           []() -> QStringList {
@@ -28,15 +28,6 @@ Music::Music(Config cfg, QWidget *parent)
     , sliderBlock(false)
 {
     ui->setupUi(this);
-
-    try {
-        if (config.cget().deviceName != "AUTODETECT")
-            fsys.setOutput(FMODSound::stringToOutputType(config.cget().deviceName));
-    }
-    catch(FMODSound::Error const& exc)
-    {
-        showCritical(exc);
-    }
 
     ui->tracklist->setModel(&trackListModel);
 

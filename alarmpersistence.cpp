@@ -22,22 +22,13 @@ AlarmPersistence::AlarmPersistence(Config cfg, QObject *parent)
     , config(std::move(cfg))
     , active(false)
     , inSnoozeMode(false)
-    , fsys()
+    , fsys(FMODSound::stringToOutputType(cfg.cget().deviceName))
     , alarmSound()
     , testSound()
 {
     connect(timer, SIGNAL(timeout()), this, SLOT(on_timer()));
 
     load();
-
-    try {
-        if (config.cget().deviceName != "AUTODETECT")
-            fsys.setOutput(FMODSound::stringToOutputType(config.cget().deviceName));
-    }
-    catch(FMODSound::Error const& exc)
-    {
-        showCritical(exc);
-    }
 
     if (!QFile::exists("./sinewave.mp3"))
         QFile::copy(":/sounds/sinewave.mp3", "./sinewave.mp3");
