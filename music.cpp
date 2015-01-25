@@ -29,8 +29,14 @@ Music::Music(Config cfg, QWidget *parent)
 {
     ui->setupUi(this);
 
-    if (config.cget().deviceName != "AUTODETECT")
-        fsys.setOutput(FMODSound::stringToOutputType(config.cget().deviceName));
+    try {
+        if (config.cget().deviceName != "AUTODETECT")
+            fsys.setOutput(FMODSound::stringToOutputType(config.cget().deviceName));
+    }
+    catch(FMODSound::Error const& exc)
+    {
+        showCritical(exc);
+    }
 
     ui->tracklist->setModel(&trackListModel);
 

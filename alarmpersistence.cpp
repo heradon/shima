@@ -30,8 +30,14 @@ AlarmPersistence::AlarmPersistence(Config cfg, QObject *parent)
 
     load();
 
-    if (config.cget().deviceName != "AUTODETECT")
-        fsys.setOutput(FMODSound::stringToOutputType(config.cget().deviceName));
+    try {
+        if (config.cget().deviceName != "AUTODETECT")
+            fsys.setOutput(FMODSound::stringToOutputType(config.cget().deviceName));
+    }
+    catch(FMODSound::Error const& exc)
+    {
+        showCritical(exc);
+    }
 
     if (!QFile::exists("./sinewave.mp3"))
         QFile::copy(":/sounds/sinewave.mp3", "./sinewave.mp3");
