@@ -23,7 +23,7 @@ public:
     std::pair <short, short> getNextAlarmPoint() const;
     std::pair <short, short> getAlarmPoint() const;
     bool isActive() const;
-    void playTestSound() const;
+    void playTestSound();
 
 signals:
     void timeout();
@@ -58,6 +58,7 @@ private: // members
     bool active;
     bool inSnoozeMode;
     FMODSound::System fsys;
+    FMODSound::MediaPlayer player;
     std::shared_ptr<FMODSound::Sound> alarmSound;
     std::shared_ptr<FMODSound::Sound> testSound;
 };

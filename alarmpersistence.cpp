@@ -25,6 +25,7 @@ AlarmPersistence::AlarmPersistence(Config cfg, QObject *parent)
     , fsys()
     , alarmSound()
     , testSound()
+    , player(&fsys)
 {
     connect(timer, SIGNAL(timeout()), this, SLOT(on_timer()));
 
@@ -36,6 +37,7 @@ AlarmPersistence::AlarmPersistence(Config cfg, QObject *parent)
     try {
         testSound = std::static_pointer_cast <FMODSound::Sound> (fsys.createSound(QFileInfo("./sinewave.mp3").absoluteFilePath().toStdString()));
         alarmSound = std::static_pointer_cast <FMODSound::Sound> (fsys.createStream(QFileInfo(QString::fromStdString(config.cget().alarmFile)).absoluteFilePath().toStdString()));
+        player.add("./sinewave.mp3");
     }
     catch (FMODSound::Error const& exc) {
         showCritical(exc);
@@ -241,8 +243,9 @@ bool AlarmPersistence::isActive() const
     return active;
 }
 
-void AlarmPersistence::playTestSound() const
+void AlarmPersistence::playTestSound()
 {
+    /*
     try {
         testSound->play(true);
         testSound->setVolume(static_cast <float> (config.cget().volume) / 100.f);
@@ -253,6 +256,9 @@ void AlarmPersistence::playTestSound() const
 
         exit(1);
     }
+    */
+    player.setIndex(0);
+    player.play();
 }
 
 void AlarmPersistence::stop_alarm()
