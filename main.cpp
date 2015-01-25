@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     }
     catch (FMODSound::Error& exc)
     {
-        // showCritical(exc);
+        showCritical(exc);
     }
 
     return 1;
