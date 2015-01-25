@@ -495,6 +495,112 @@ void System::update()
 {
     FMOD_System_Update(system_);
 }
+//------------------------------------------------------------------------------------------
+void System::setOutput(FMOD_OUTPUTTYPE type)
+{
+    TRY(FMOD_System_SetOutput, system_, type);
+}
+//------------------------------------------------------------------------------------------
+FMOD_OUTPUTTYPE System::getOutput() const
+{
+    FMOD_OUTPUTTYPE type;
+    TRY(FMOD_System_GetOutput, system_, &type);
+    return type;
+}
+//##########################################################################################
+FMOD_OUTPUTTYPE stringToOutputType(const std::string &typeName)
+{
+    if (typeName == "AUTODETECT")
+        return (FMOD_OUTPUTTYPE_AUTODETECT);
+    if (typeName == "UNKNOWN")
+        return (FMOD_OUTPUTTYPE_UNKNOWN);
+    if (typeName == "NOSOUND")
+        return (FMOD_OUTPUTTYPE_NOSOUND);
+    if (typeName == "WAVWRITER")
+        return (FMOD_OUTPUTTYPE_WAVWRITER);
+    if (typeName == "NOSOUND_NRT")
+        return (FMOD_OUTPUTTYPE_NOSOUND_NRT);
+    if (typeName == "WAVWRITER_NRT")
+        return (FMOD_OUTPUTTYPE_WAVWRITER_NRT);
+    if (typeName == "DSOUND")
+        return (FMOD_OUTPUTTYPE_DSOUND);
+    if (typeName == "WINMM")
+        return (FMOD_OUTPUTTYPE_WINMM);
+    if (typeName == "WASAPI")
+        return (FMOD_OUTPUTTYPE_WASAPI);
+    if (typeName == "ASIO")
+        return (FMOD_OUTPUTTYPE_ASIO);
+    if (typeName == "PULSEAUDIO")
+        return (FMOD_OUTPUTTYPE_PULSEAUDIO);
+    if (typeName == "ALSA")
+        return (FMOD_OUTPUTTYPE_ALSA);
+    if (typeName == "COREAUDIO")
+        return (FMOD_OUTPUTTYPE_COREAUDIO);
+    if (typeName == "XBOX360")
+        return (FMOD_OUTPUTTYPE_XBOX360);
+    if (typeName == "PS3")
+        return (FMOD_OUTPUTTYPE_PS3);
+    if (typeName == "AUDIOTRACK")
+        return (FMOD_OUTPUTTYPE_AUDIOTRACK);
+    if (typeName == "OPENSL")
+        return (FMOD_OUTPUTTYPE_OPENSL);
+    if (typeName == "WIIU")
+        return (FMOD_OUTPUTTYPE_WIIU);
+    if (typeName == "AUDIOOUT")
+        return (FMOD_OUTPUTTYPE_AUDIOOUT);
+    if (typeName == "MAX")
+        return (FMOD_OUTPUTTYPE_MAX);
+    return FMOD_OUTPUTTYPE_AUTODETECT;
+}
+//------------------------------------------------------------------------------------------
+std::string outputTypeToString(FMOD_OUTPUTTYPE type)
+{
+    switch(type)
+    {
+        case(FMOD_OUTPUTTYPE_AUTODETECT):
+            return "AUTODETECT";
+        case(FMOD_OUTPUTTYPE_UNKNOWN):
+            return "UNKNOWN";
+        case(FMOD_OUTPUTTYPE_NOSOUND):
+            return "NOSOUND";
+        case(FMOD_OUTPUTTYPE_WAVWRITER):
+            return "WAVWRITER";
+        case(FMOD_OUTPUTTYPE_NOSOUND_NRT):
+            return "NOSOUND_NRT";
+        case(FMOD_OUTPUTTYPE_WAVWRITER_NRT):
+            return "WAVWRITER_NRT";
+        case(FMOD_OUTPUTTYPE_DSOUND):
+            return "DSOUND";
+        case(FMOD_OUTPUTTYPE_WINMM):
+            return "WINMM";
+        case(FMOD_OUTPUTTYPE_WASAPI):
+            return "WASAPI";
+        case(FMOD_OUTPUTTYPE_ASIO):
+            return "ASIO";
+        case(FMOD_OUTPUTTYPE_PULSEAUDIO):
+            return "PULSEAUDIO";
+        case(FMOD_OUTPUTTYPE_ALSA):
+            return "ALSA";
+        case(FMOD_OUTPUTTYPE_COREAUDIO):
+            return "COREAUDIO";
+        case(FMOD_OUTPUTTYPE_XBOX360):
+            return "XBOX360";
+        case(FMOD_OUTPUTTYPE_PS3):
+            return "PS3";
+        case(FMOD_OUTPUTTYPE_AUDIOTRACK):
+            return "AUDIOTRACK";
+        case(FMOD_OUTPUTTYPE_OPENSL):
+            return "OPENSL";
+        case(FMOD_OUTPUTTYPE_WIIU):
+            return "WIIU";
+        case(FMOD_OUTPUTTYPE_AUDIOOUT):
+            return "AUDIOOUT";
+        case(FMOD_OUTPUTTYPE_MAX):
+            return "MAX";
+        default:
+            return "UNKNOWN";
+    }
+}
 //##########################################################################################
 MediaPlayer::MediaPlayer(System* fsys, float volume)
     : curSound_()
@@ -701,7 +807,7 @@ bool MediaPlayer::isPaused() const
 {
     return curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPaused();
 }
-
+//------------------------------------------------------------------------------------------
 bool MediaPlayer::isPlaying() const
 {
     return curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPlaying();

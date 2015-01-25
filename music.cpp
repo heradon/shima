@@ -29,6 +29,9 @@ Music::Music(Config cfg, QWidget *parent)
 {
     ui->setupUi(this);
 
+    if (config.cget().deviceName != "AUTODETECT")
+        fsys.setOutput(FMODSound::stringToOutputType(config.cget().deviceName));
+
     ui->tracklist->setModel(&trackListModel);
 
     connect(ui->vol_down, SIGNAL(clicked()), this, SLOT(decrease_volume()));

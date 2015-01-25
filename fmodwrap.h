@@ -163,7 +163,14 @@ namespace FMODSound
 
         FMOD_SYSTEM* getSystem();
         void update();
+        void setOutput(FMOD_OUTPUTTYPE type);
+        FMOD_OUTPUTTYPE getOutput() const;
     };
+
+//##########################################################################################
+
+    FMOD_OUTPUTTYPE stringToOutputType(std::string const& typeName);
+    std::string outputTypeToString(FMOD_OUTPUTTYPE type);
 
 //##########################################################################################
 

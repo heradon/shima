@@ -83,7 +83,7 @@ std::shared_ptr<ConfigContent> ConfigContentWrapper::operator()()
 }
 
 ConfigContent::ConfigContent(std::string musicPath, std::string alarmFile, std::pair<short, short> alarmPoint, bool alarmActive,
-                             unsigned short volume, unsigned short snoozeTime, unsigned short musicVolume)
+                             unsigned short volume, unsigned short snoozeTime, unsigned short musicVolume, std::string deviceName)
     : musicPath(std::move(musicPath))
     , alarmFile(std::move(alarmFile))
     , alarmPoint(alarmPoint)
@@ -91,5 +91,6 @@ ConfigContent::ConfigContent(std::string musicPath, std::string alarmFile, std::
     , volume(volume)
     , snoozeTime(snoozeTime)
     , musicVolume(musicVolume)
+    , deviceName(std::move(deviceName))
 {
 }

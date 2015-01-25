@@ -25,11 +25,13 @@ AlarmPersistence::AlarmPersistence(Config cfg, QObject *parent)
     , fsys()
     , alarmSound()
     , testSound()
-    , player(&fsys)
 {
     connect(timer, SIGNAL(timeout()), this, SLOT(on_timer()));
 
     load();
+
+    if (config.cget().deviceName != "AUTODETECT")
+        fsys.setOutput(FMODSound::stringToOutputType(config.cget().deviceName));
 
     if (!QFile::exists("./sinewave.mp3"))
         QFile::copy(":/sounds/sinewave.mp3", "./sinewave.mp3");
@@ -37,7 +39,6 @@ AlarmPersistence::AlarmPersistence(Config cfg, QObject *parent)
     try {
         testSound = std::static_pointer_cast <FMODSound::Sound> (fsys.createSound(QFileInfo("./sinewave.mp3").absoluteFilePath().toStdString()));
         alarmSound = std::static_pointer_cast <FMODSound::Sound> (fsys.createStream(QFileInfo(QString::fromStdString(config.cget().alarmFile)).absoluteFilePath().toStdString()));
-        player.add("./sinewave.mp3");
     }
     catch (FMODSound::Error const& exc) {
         showCritical(exc);
@@ -245,7 +246,6 @@ bool AlarmPersistence::isActive() const
 
 void AlarmPersistence::playTestSound()
 {
-    /*
     try {
         testSound->play(true);
         testSound->setVolume(static_cast <float> (config.cget().volume) / 100.f);
@@ -256,9 +256,6 @@ void AlarmPersistence::playTestSound()
 
         exit(1);
     }
-    */
-    player.setIndex(0);
-    player.play();
 }
 
 void AlarmPersistence::stop_alarm()

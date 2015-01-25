@@ -58,7 +58,6 @@ private: // members
     bool active;
     bool inSnoozeMode;
     FMODSound::System fsys;
-    FMODSound::MediaPlayer player;
     std::shared_ptr<FMODSound::Sound> alarmSound;
     std::shared_ptr<FMODSound::Sound> testSound;
 };
