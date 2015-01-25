@@ -169,8 +169,6 @@ void Music::increase_volume()
     vol += 0.05;
     vol = std::min(1., vol);
 
-    qDebug() << vol;
-
     int volInt = (int)std::nearbyint(vol*100.);
     player.setVolume(vol);
     config.get()()->musicVolume = volInt;
@@ -181,8 +179,6 @@ void Music::decrease_volume()
     double vol = player.getVolume();
     vol -= 0.05;
     vol = std::max(0., vol);
-
-    qDebug() << vol;
 
     int volInt = (int)std::nearbyint(vol*100.);
     player.setVolume(vol);

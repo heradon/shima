@@ -19,6 +19,8 @@ MainWindow::MainWindow(Config cfg, QWidget *parent)
 {
     ui->setupUi(this);
 
+    activateWindow();
+
     // External Stylesheet for customize by Users
 
     QFile File("stylesheet.qss");
