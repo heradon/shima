@@ -34,6 +34,8 @@ private slots:
 
     void on_calendar_button_clicked();
 
+    void on_system_menu_clicked();
+
 private:
     Ui::MainWindow *ui;
     AlarmPersistence* alarmer;

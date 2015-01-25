@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "calendar.h"
+#include "system_menu.h"
 
 #include <cstring>
 #include <string>
@@ -93,4 +94,10 @@ void MainWindow::on_calendar_button_clicked()
     std::unique_ptr<Calendar> calendarWindow (new Calendar);
     calendarWindow->setModal(true);
     calendarWindow->exec();
+}
+
+void MainWindow::on_system_menu_clicked()
+{
+    std::unique_ptr<SystemMenu> systemMenu (new SystemMenu(config));
+    systemMenu->exec();
 }

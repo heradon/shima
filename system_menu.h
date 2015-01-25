@@ -2,21 +2,30 @@
 #define SYSTEM_MENU_H
 
 #include <QDialog>
+#include "config.h"
 
 namespace Ui {
-class system_menu;
+class SystemMenu;
 }
 
-class system_menu : public QDialog
+class SystemMenu : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit system_menu(QWidget *parent = 0);
-    ~system_menu();
+    explicit SystemMenu(Config cfg);
+    ~SystemMenu();
+
+private slots:
+    void on_music_button_clicked();
+
+    void on_music_button_2_clicked();
+
+    void on_alarm_button_6_clicked();
 
 private:
-    Ui::system_menu *ui;
+    Ui::SystemMenu *ui;
+    Config config;
 };
 
 #endif // SYSTEM_MENU_H

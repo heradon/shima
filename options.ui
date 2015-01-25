@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SystemInfo</class>
- <widget class="QDialog" name="SystemInfo">
+ <class>Options</class>
+ <widget class="QDialog" name="Options">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,13 +13,23 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <widget class="QComboBox" name="outputSelector">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>20</y>
+     <width>271</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>0</y>
-     <width>131</width>
-     <height>31</height>
+     <y>10</y>
+     <width>221</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="font">
@@ -30,37 +40,23 @@
     </font>
    </property>
    <property name="text">
-    <string>SYSTEM</string>
+    <string>Audio Output</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QPushButton" name="alarm_button_6">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>70</y>
-     <width>71</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>24</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>CPU</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>100</y>
+     <x>710</x>
+     <y>10</y>
      <width>81</width>
-     <height>31</height>
+     <height>81</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
    </property>
    <property name="font">
     <font>
@@ -69,8 +65,17 @@
      <bold>true</bold>
     </font>
    </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
-    <string>RAM</string>
+    <string>&lt;</string>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
    </property>
   </widget>
  </widget>

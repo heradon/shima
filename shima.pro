@@ -55,7 +55,8 @@ SOURCES += main.cpp\
     system_info.cpp \
     fmodwrap.cpp \
     common_errors.cpp \
-    directorylistmodel.cpp
+    directorylistmodel.cpp \
+    options.cpp
 
 HEADERS  += mainwindow.h \
     music.h \
@@ -131,14 +132,16 @@ HEADERS  += mainwindow.h \
     fmodresult.h \
     fmodwrap.h \
     common_errors.h \
-    directorylistmodel.h
+    directorylistmodel.h \
+    options.h
 
 FORMS    += mainwindow.ui \
     music.ui \
     alarm.ui \
     calendar.ui \
     system_menu.ui \
-    system_info.ui
+    system_info.ui \
+    options.ui
 
 TRANSLATIONS    += \
     shima_de.ts \

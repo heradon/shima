@@ -1,14 +1,14 @@
 #include "system_info.h"
 #include "ui_system_info.h"
 
-system_info::system_info(QWidget *parent) :
+SystemInfo::SystemInfo(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::system_info)
+    ui(new Ui::SystemInfo)
 {
     ui->setupUi(this);
 }
 
-system_info::~system_info()
+SystemInfo::~SystemInfo()
 {
     delete ui;
 }
