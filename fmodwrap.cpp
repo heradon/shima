@@ -430,6 +430,7 @@ System::System(FMOD_OUTPUTTYPE outputType, SpeakerMode speakerMode, int channelC
 System::~System()
 {
     update();
+    FMOD_System_Close(system_);
 }
 //------------------------------------------------------------------------------------------
 std::shared_ptr<ChannelGroup> System::createChannelGroup(std::string const& name)
@@ -645,7 +646,16 @@ void MediaPlayer::play()
             currentPlayingPosition_ = position_.value();
         };
 
-        if (position_ && currentPlayingPosition_ && position_.value() != currentPlayingPosition_.value())
+        // if position got invalidated always reload track
+        if (!position_)
+        {
+            stop();
+            curSound_.reset();
+            play();
+            return;
+        }
+
+        if (currentPlayingPosition_ && position_.value() != currentPlayingPosition_.value())
         {
             if (curSound_.value()->isOpened())
                 stop();
@@ -725,11 +735,23 @@ void MediaPlayer::previous(bool rollOver)
 void MediaPlayer::stop()
 {
     if (curSound_ && curSound_.value()->isOpened() && (curSound_.value()->isPlaying() || curSound_.value()->isPaused()))
+    {
         curSound_.value()->stop();
+        curSound_.reset();
+    }
 }
 //------------------------------------------------------------------------------------------
 void MediaPlayer::togglePause()
 {
+    // if the position got invalidated: try relod in any case:
+    if (!position_) {
+        stop();
+        curSound_.reset();
+        play();
+        return;
+    }
+
+    // otherwise:
     if (position_ && currentPlayingPosition_ && position_.value() != currentPlayingPosition_.value())
     {
         play();
@@ -777,11 +799,9 @@ void MediaPlayer::setIndex(std::size_t position)
     }
 }
 //------------------------------------------------------------------------------------------
-std::size_t MediaPlayer::getIndex() const
+boost::optional<std::size_t> MediaPlayer::getIndex() const
 {
-    if (position_)
-        return position_.value();
-    return 0;
+    return position_;
 }
 //------------------------------------------------------------------------------------------
 void MediaPlayer::setPosition(unsigned int position)

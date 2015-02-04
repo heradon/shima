@@ -33,7 +33,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     music.cpp \
     alarm.cpp \
     alarmpersistence.cpp \

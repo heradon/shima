@@ -94,7 +94,7 @@ void Music::pause_track()
 
 void Music::suspend_track()
 {
-    if (player.isPlaying())
+    if (player.isPlaying() && !player.isPaused())
     {
         suspended = true;
         pause_track();
@@ -129,7 +129,7 @@ void Music::next_track(bool circular)
     {
         player.next(circular);
         ui->slider->setMaximum(player.getLength());
-        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex() + trackListModel.getDirectoryCount(), 0));
+        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex().value() + trackListModel.getDirectoryCount(), 0));
     }
     catch(FMODSound::Error const& exc)
     {
@@ -143,7 +143,7 @@ void Music::previous_track()
     {
         player.previous(true);
         ui->slider->setMaximum(player.getLength());
-        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex() + trackListModel.getDirectoryCount(), 0));
+        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex().value() + trackListModel.getDirectoryCount(), 0));
     }
     catch(FMODSound::Error const& exc)
     {
@@ -192,7 +192,6 @@ void Music::on_rescan_button_clicked()
 
 void Music::on_tracklist_doubleClicked(const QModelIndex &index)
 {
-    on_tracklist_pressed(index);
     try
     {
         auto info = trackListModel.getFileInfo(index);
@@ -203,7 +202,14 @@ void Music::on_tracklist_doubleClicked(const QModelIndex &index)
             player_rescan();
         }
         else
+        {
+            if(!player.getIndex())
+            {
+                player.stop();
+            }
+            on_tracklist_pressed(index);
             play_track();
+        }
     }
     catch (FMODSound::Error const& exc)
     {
@@ -213,11 +219,16 @@ void Music::on_tracklist_doubleClicked(const QModelIndex &index)
 
 void Music::on_tracklist_pressed(const QModelIndex &index)
 {
+    auto info = trackListModel.getFileInfo(index);
+    if (!info.isFile())
+        return;
+
+    if ( (player.isPaused() || player.isPlaying()) && !player.getIndex() )
+        return;
+
     try
     {
-        auto info = trackListModel.getFileInfo(index);
-        if (info.isFile())
-            load_track(index.row() - trackListModel.getDirectoryCount());
+        load_track(index.row() - trackListModel.getDirectoryCount());
     }
     catch (FMODSound::Error const& exc)
     {

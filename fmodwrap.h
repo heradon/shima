@@ -261,7 +261,7 @@ namespace FMODSound
          * @brief Returns the currently selected track index.
          * @return Returns the track index.
          */
-        std::size_t getIndex() const;
+        boost::optional <std::size_t> getIndex() const;
 
         /**
          * @brief Sets the track position in milliseconds
