@@ -616,8 +616,13 @@ MediaPlayer::MediaPlayer(System* fsys, float volume)
 //------------------------------------------------------------------------------------------
 MediaPlayer::~MediaPlayer()
 {
+    #if BOOST_VERSION < 105600
+    if (curSound_ && curSound_.get()->isOpened())
+        curSound_.get()->stop();
+    #else
     if (curSound_ && curSound_.value()->isOpened())
         curSound_.value()->stop();
+    #endif
 }
 //------------------------------------------------------------------------------------------
 void MediaPlayer::clear()
@@ -640,10 +645,17 @@ void MediaPlayer::play()
     {
         auto playLambda = [this]()
         {
-            curSound_.value()->play(true);
-            curSound_.value()->setVolume(volume_);
-            curSound_.value()->unpause();
-            currentPlayingPosition_ = position_.value();
+            #if BOOST_VERSION < 105600
+                curSound_.get()->play(true);
+                curSound_.get()->setVolume(volume_);
+                curSound_.get()->unpause();
+                currentPlayingPosition_ = position_.get();
+            #else
+                curSound_.value()->play(true);
+                curSound_.value()->setVolume(volume_);
+                curSound_.value()->unpause();
+                currentPlayingPosition_ = position_.value();
+            #endif
         };
 
         // if position got invalidated always reload track
@@ -655,16 +667,39 @@ void MediaPlayer::play()
             return;
         }
 
-        if (currentPlayingPosition_ && position_.value() != currentPlayingPosition_.value())
+        #if BOOST_VERSION < 105600
+            if (currentPlayingPosition_ && position_.get() != currentPlayingPosition_.get())
+        #else
+            if (currentPlayingPosition_ && position_.value() != currentPlayingPosition_.value())
+        #endif
         {
-            if (curSound_.value()->isOpened())
+            #if BOOST_VERSION < 105600
+                if (curSound_.GET()->isOpened())
+            #else
+                if (curSound_.value()->isOpened())
+            #endif
+
                 stop();
-            curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.value()]));
+            #if BOOST_VERSION < 105600
+                curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.get()]));
+            #else
+                curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.value()]));
+            #endif
             playLambda();
         }
-        else if (curSound_.value()->isOpened() && curSound_.value()->isPaused())
+        #if BOOST_VERSION < 105600
+            else if (curSound_.get()->isOpened() && curSound_.get()->isPaused())
+        #else
+            else if (curSound_.value()->isOpened() && curSound_.value()->isPaused())
+        #endif
+        
         {
-            curSound_.value()->unpause();
+            #if BOOST_VERSION < 105600
+                curSound_.get()->unpause();
+            #else
+                curSound_.value()->unpause();
+            #endif
+            
         }
         else
         {
