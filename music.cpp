@@ -129,7 +129,12 @@ void Music::next_track(bool circular)
     {
         player.next(circular);
         ui->slider->setMaximum(player.getLength());
-        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex().value() + trackListModel.getDirectoryCount(), 0));
+        
+        #if BOOST_VERSION < 105600
+            ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex().get() + trackListModel.getDirectoryCount(), 0));
+        #else
+            ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex().value() + trackListModel.getDirectoryCount(), 0));
+        #endif
     }
     catch(FMODSound::Error const& exc)
     {
@@ -143,7 +148,12 @@ void Music::previous_track()
     {
         player.previous(true);
         ui->slider->setMaximum(player.getLength());
-        ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex().value() + trackListModel.getDirectoryCount(), 0));
+        
+        #if BOOST_VERSION < 105600
+            ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex().get() + trackListModel.getDirectoryCount(), 0));
+        #else
+            ui->tracklist->setCurrentIndex(ui->tracklist->model()->index(player.getIndex().value() + trackListModel.getDirectoryCount(), 0));        
+        #endif
     }
     catch(FMODSound::Error const& exc)
     {
