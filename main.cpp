@@ -10,10 +10,18 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
 #ifdef __linux__
     auto pathString = QDir::homePath() + "/.config/shima";
 
+    if (!QDir(pathString).exists())
+        QDir(pathString).mkdir(".");
+
+    Config configOrigin((pathString + "/config.json").toStdString());
+
+    a.setOverrideCursor( QCursor( Qt::BlankCursor ) );
+#elif __posix
+    auto pathString = QDir::homePath() + "/.config/shima";
+    
     if (!QDir(pathString).exists())
         QDir(pathString).mkdir(".");
 
