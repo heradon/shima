@@ -16,6 +16,12 @@ inline constexpr char const* toString(ResultEnum x)
     return ResultEnum_strings[static_cast<size_t>(x)];
 }
 
+#if BOOST_VERSION < 105600
+    #define OPT_GET get
+#else
+    #define OPT_GET value
+#endif
+
 #include <stdexcept>
 #include <fstream>
 #include <cstring>
@@ -37,7 +43,7 @@ FMOD_RESULT F_CALLBACK channelCallback(FMOD_CHANNELCONTROL *channel,  FMOD_CHANN
     if (iter == channelSoundLookupTable.end())
         return FMOD_OK;
 
-    auto* sound = iter->second.get();
+    auto* sound = iter->second.OPT_GET();
     channelSoundLookupTable.erase(iter);
     if (sound->isPersistent())
     {
@@ -616,20 +622,15 @@ MediaPlayer::MediaPlayer(System* fsys, float volume)
 //------------------------------------------------------------------------------------------
 MediaPlayer::~MediaPlayer()
 {
-    #if BOOST_VERSION < 105600
-    if (curSound_ && curSound_.get()->isOpened())
-        curSound_.get()->stop();
-    #else
-    if (curSound_ && curSound_.value()->isOpened())
-        curSound_.value()->stop();
-    #endif
+    if (curSound_ && curSound_.OPT_GET()->isOpened())
+        curSound_.OPT_GET()->stop();
 }
 //------------------------------------------------------------------------------------------
 void MediaPlayer::clear()
 {
     position_.reset();
-    //if (curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPlaying())
-    //    curSound_.value()->stop();
+    //if (curSound_ && curSound_.OPT_GET()->isOpened() && curSound_.OPT_GET()->isPlaying())
+    //    curSound_.OPT_GET()->stop();
     //curSound_.reset();
     list_.clear();
 }
@@ -645,17 +646,10 @@ void MediaPlayer::play()
     {
         auto playLambda = [this]()
         {
-            #if BOOST_VERSION < 105600
-                curSound_.get()->play(true);
-                curSound_.get()->setVolume(volume_);
-                curSound_.get()->unpause();
-                currentPlayingPosition_ = position_.get();
-            #else
-                curSound_.value()->play(true);
-                curSound_.value()->setVolume(volume_);
-                curSound_.value()->unpause();
-                currentPlayingPosition_ = position_.value();
-            #endif
+                curSound_.OPT_GET()->play(true);
+                curSound_.OPT_GET()->setVolume(volume_);
+                curSound_.OPT_GET()->unpause();
+                currentPlayingPosition_ = position_.OPT_GET();
         };
 
         // if position got invalidated always reload track
@@ -666,40 +660,17 @@ void MediaPlayer::play()
             play();
             return;
         }
-
-        #if BOOST_VERSION < 105600
-            if (currentPlayingPosition_ && position_.get() != currentPlayingPosition_.get())
-        #else
-            if (currentPlayingPosition_ && position_.value() != currentPlayingPosition_.value())
-        #endif
+            if (currentPlayingPosition_ && position_.OPT_GET() != currentPlayingPosition_.OPT_GET())
         {
-            #if BOOST_VERSION < 105600
-                if (curSound_.GET()->isOpened())
-            #else
-                if (curSound_.value()->isOpened())
-            #endif
-
+                if (curSound_.OPT_GET()->isOpened())
                 stop();
-            #if BOOST_VERSION < 105600
-                curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.get()]));
-            #else
-                curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.value()]));
-            #endif
-            playLambda();
+                curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.OPT_GET()]));
+                playLambda();
         }
-        #if BOOST_VERSION < 105600
-            else if (curSound_.get()->isOpened() && curSound_.get()->isPaused())
-        #else
-            else if (curSound_.value()->isOpened() && curSound_.value()->isPaused())
-        #endif
-        
+            else if (curSound_.OPT_GET()->isOpened() && curSound_.OPT_GET()->isPaused())
+
         {
-            #if BOOST_VERSION < 105600
-                curSound_.get()->unpause();
-            #else
-                curSound_.value()->unpause();
-            #endif
-            
+                curSound_.OPT_GET()->unpause();
         }
         else
         {
@@ -714,15 +685,15 @@ void MediaPlayer::play()
         if (!position_)
             position_ = 0;
 
-        curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.value()]));
+        curSound_ = std::static_pointer_cast <FMODSound::Sound> (fsys_->createStream(list_[position_.OPT_GET()]));
         play();
     }
 }
 //------------------------------------------------------------------------------------------
 void MediaPlayer::pause()
 {
-    if (curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPlaying())
-        curSound_.value()->pause();
+    if (curSound_ && curSound_.OPT_GET()->isOpened() && curSound_.OPT_GET()->isPlaying())
+        curSound_.OPT_GET()->pause();
 }
 //------------------------------------------------------------------------------------------
 void MediaPlayer::next(bool rollOver)
@@ -734,13 +705,13 @@ void MediaPlayer::next(bool rollOver)
         else
             return;
     }
-    else if (position_.value() + 1 < list_.size())
+    else if (position_.OPT_GET() + 1 < list_.size())
     {
-        position_.value()++;
+        position_.OPT_GET()++;
     }
     else if (rollOver && !list_.empty())
     {
-        position_.value() = 0;
+        position_.OPT_GET() = 0;
     }
 
     play();
@@ -755,13 +726,13 @@ void MediaPlayer::previous(bool rollOver)
         else
             return;
     }
-    else if (position_.value() > 0 && !list_.empty())
+    else if (position_.OPT_GET() > 0 && !list_.empty())
     {
-        position_.value()--;
+        position_.OPT_GET()--;
     }
     else if (rollOver && !list_.empty())
     {
-        position_.value() = list_.size() - 1;
+        position_.OPT_GET() = list_.size() - 1;
     }
 
     play();
@@ -769,9 +740,9 @@ void MediaPlayer::previous(bool rollOver)
 //------------------------------------------------------------------------------------------
 void MediaPlayer::stop()
 {
-    if (curSound_ && curSound_.value()->isOpened() && (curSound_.value()->isPlaying() || curSound_.value()->isPaused()))
+    if (curSound_ && curSound_.OPT_GET()->isOpened() && (curSound_.OPT_GET()->isPlaying() || curSound_.OPT_GET()->isPaused()))
     {
-        curSound_.value()->stop();
+        curSound_.OPT_GET()->stop();
         curSound_.reset();
     }
 }
@@ -787,16 +758,16 @@ void MediaPlayer::togglePause()
     }
 
     // otherwise:
-    if (position_ && currentPlayingPosition_ && position_.value() != currentPlayingPosition_.value())
+    if (position_ && currentPlayingPosition_ && position_.OPT_GET() != currentPlayingPosition_.OPT_GET())
     {
         play();
     }
-    else if (curSound_ && curSound_.value()->isOpened())
+    else if (curSound_ && curSound_.OPT_GET()->isOpened())
     {
-        if (curSound_.value()->isPaused())
-            curSound_.value()->unpause();
-        else if (curSound_.value()->isPlaying())
-            curSound_.value()->pause();
+        if (curSound_.OPT_GET()->isPaused())
+            curSound_.OPT_GET()->unpause();
+        else if (curSound_.OPT_GET()->isPlaying())
+            curSound_.OPT_GET()->pause();
     }
     else
         play();
@@ -805,18 +776,18 @@ void MediaPlayer::togglePause()
 void MediaPlayer::setVolume(float volume)
 {
     volume_ = volume;
-    if (curSound_ && curSound_.value()->isOpened())
+    if (curSound_ && curSound_.OPT_GET()->isOpened())
     {
-        if (curSound_.value()->isPlaying())
+        if (curSound_.OPT_GET()->isPlaying())
         {
-            curSound_.value()->pause();
-            curSound_.value()->setVolume(volume_);
-            curSound_.value()->unpause();
+            curSound_.OPT_GET()->pause();
+            curSound_.OPT_GET()->setVolume(volume_);
+            curSound_.OPT_GET()->unpause();
         }
-        else if (curSound_.value()->isPaused())
+        else if (curSound_.OPT_GET()->isPaused())
         {
-            curSound_.value()->setVolume(volume_);
-            curSound_.value()->unpause();
+            curSound_.OPT_GET()->setVolume(volume_);
+            curSound_.OPT_GET()->unpause();
         }
     }
 }
@@ -842,31 +813,31 @@ boost::optional<std::size_t> MediaPlayer::getIndex() const
 void MediaPlayer::setPosition(unsigned int position)
 {
     if (curSound_)
-        curSound_.value()->setPosition(position);
+        curSound_.OPT_GET()->setPosition(position);
 }
 //------------------------------------------------------------------------------------------
 unsigned int MediaPlayer::getPosition() const
 {
     if (curSound_)
-        return curSound_.value()->getPosition();
+        return curSound_.OPT_GET()->getPosition();
     return 0;
 }
 //------------------------------------------------------------------------------------------
 unsigned int MediaPlayer::getLength() const
 {
     if (curSound_)
-        return curSound_.value()->getLength();
+        return curSound_.OPT_GET()->getLength();
     return 0;
 }
 //------------------------------------------------------------------------------------------
 bool MediaPlayer::isPaused() const
 {
-    return curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPaused();
+    return curSound_ && curSound_.OPT_GET()->isOpened() && curSound_.OPT_GET()->isPaused();
 }
 //------------------------------------------------------------------------------------------
 bool MediaPlayer::isPlaying() const
 {
-    return curSound_ && curSound_.value()->isOpened() && curSound_.value()->isPlaying();
+    return curSound_ && curSound_.OPT_GET()->isOpened() && curSound_.OPT_GET()->isPlaying();
 }
 //------------------------------------------------------------------------------------------
 
