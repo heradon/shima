@@ -16,6 +16,7 @@ inline constexpr char const* toString(ResultEnum x)
     return ResultEnum_strings[static_cast<size_t>(x)];
 }
 
+// global macro for old boost version
 #if BOOST_VERSION < 105600
     #define OPT_GET get
 #else
