@@ -45,10 +45,10 @@ void Options::on_alarm_button_6_clicked()
 void Options::on_ShiPy_startup_clicked()
 {
     PythonProcess& p = PythonProcess::getInstance();
-    if (!p.running_)
+    if (!p.isRunning())
     {
         QStringList args;
-        args << config.cget().pyFileName << "--device_prefix" << config.cget().shipyDevicePrefix;
+        args << QString::fromStdString(config.cget().pyFileName) << "--device_prefix" << QString::fromStdString(config.cget().shipyDevicePrefix);
         p.start(config.cget().pythonExecutable.c_str(), args);
     }
     else

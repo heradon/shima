@@ -1,23 +1,11 @@
 #include "pythonstartup.h"
 #include <QDebug>
 
-void pystart() {
-
-    QString program = "./shipy.py";
-    QStringList arguments;
-    arguments << "-style" << "fusion";
-
-    QProcess *myProcess = new QProcess(parent);
-    myProcess->start(program, arguments);
-
-    connect(process_.get(), SIGNAL(error(QProcess::ProcessError)), this, SLOT(error(QProcess::ProcessError)));
-    connect(process_.get(), SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finished(int, QProcess::ExitStatus)));
-}
-
 PythonProcess::PythonProcess()
     : process_(new QProcess)
 {
-
+    connect(process_.get(), SIGNAL(error(QProcess::ProcessError)), this, SLOT(error(QProcess::ProcessError)));
+    connect(process_.get(), SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finished(int, QProcess::ExitStatus)));
 }
 
 PythonProcess& PythonProcess::getInstance() {

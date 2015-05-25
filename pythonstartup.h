@@ -27,7 +27,6 @@ public:
     void started();
     void stop();
 
-
 private slots:
     void finished(int exitCode, QProcess::ExitStatus exitStatus);
     void error(QProcess::ProcessError error);
