@@ -21,6 +21,8 @@ private slots:
 
     void on_alarm_button_6_clicked();
 
+    void on_ShiPy_startup_clicked();
+
 private:
     Ui::Options *ui;
     Config config;

@@ -56,7 +56,8 @@ SOURCES += main.cpp\
     fmodwrap.cpp \
     common_errors.cpp \
     directorylistmodel.cpp \
-    options.cpp
+    options.cpp \
+    pythonstartup.cpp
 
 HEADERS  += mainwindow.h \
     music.h \
@@ -133,7 +134,8 @@ HEADERS  += mainwindow.h \
     fmodwrap.h \
     common_errors.h \
     directorylistmodel.h \
-    options.h
+    options.h \
+    pythonstartup.h
 
 FORMS    += mainwindow.ui \
     music.ui \

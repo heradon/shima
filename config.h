@@ -26,10 +26,19 @@ struct ConfigContent : public JSON::FusionStruct <ConfigContent>
     unsigned short snoozeTime;
     unsigned short musicVolume;
     std::string deviceName;
+    unsigned short remotePort;
+    bool startPyServer;
+    std::string pyFileName;
+    std::string shipyDevicePrefix;
+    std::string pythonExecutable;
 
     ConfigContent(std::string musicPath = "./music", std::string alarmFile = "./sinewave.mp3",
                   std::pair <short, short> alarmPoint = {0, 0}, bool alarmActive = false, unsigned short volume = 80,
-                  unsigned short snoozeTime = 5, unsigned short musicVolume = 50, std::string deviceName = "AUTODETECT");
+                  unsigned short snoozeTime = 5, unsigned short musicVolume = 50, std::string deviceName = "AUTODETECT",
+                  unsigned short remotePort = 9999, bool startPyServer = false,
+                  std::string pyFileName = "shipy.py",
+                  std::string shipyDevicePrefix = "",
+                  std::string pythonExecutable = "");
 };
 
 namespace __INTERNAL
@@ -48,6 +57,11 @@ BOOST_FUSION_ADAPT_STRUCT
     (unsigned short, snoozeTime)
     (unsigned short, musicVolume)
     (std::string, deviceName)
+    (unsigned short, remotePort)
+    (bool, startPyServer)
+    (std::string, pyFileName)
+    (std::string, shipyDevicePrefix)
+    (std::string, pythonExecutable)
 )
 
 class ConfigContentWrapper

@@ -83,7 +83,8 @@ std::shared_ptr<ConfigContent> ConfigContentWrapper::operator()()
 }
 
 ConfigContent::ConfigContent(std::string musicPath, std::string alarmFile, std::pair<short, short> alarmPoint, bool alarmActive,
-                             unsigned short volume, unsigned short snoozeTime, unsigned short musicVolume, std::string deviceName)
+                             unsigned short volume, unsigned short snoozeTime, unsigned short musicVolume, std::string deviceName,
+                             unsigned short remotePort, bool startPyServer, std::string pyFileName, std::string shipyDevicePrefix, std::string pythonExecutable)
     : musicPath(std::move(musicPath))
     , alarmFile(std::move(alarmFile))
     , alarmPoint(alarmPoint)
@@ -92,5 +93,10 @@ ConfigContent::ConfigContent(std::string musicPath, std::string alarmFile, std::
     , snoozeTime(snoozeTime)
     , musicVolume(musicVolume)
     , deviceName(std::move(deviceName))
+    , remotePort(remotePort)
+    , startPyServer(startPyServer)
+    , pyFileName(pyFileName)
+    , shipyDevicePrefix(shipyDevicePrefix)
+    , pythonExecutable(pythonExecutable)
 {
 }

@@ -1,5 +1,6 @@
 #include "options.h"
 #include "ui_options.h"
+#include "pythonstartup.h"
 
 Options::Options(Config cfg)
     : QDialog(nullptr)
@@ -39,4 +40,19 @@ void Options::on_outputSelector_currentIndexChanged(const QString &arg1)
 void Options::on_alarm_button_6_clicked()
 {
     close();
+}
+
+void Options::on_ShiPy_startup_clicked()
+{
+    PythonProcess& p = PythonProcess::getInstance();
+    if (!p.running_)
+    {
+        QStringList args;
+        args << config.cget().pyFileName << "--device_prefix" << config.cget().shipyDevicePrefix;
+        p.start(config.cget().pythonExecutable.c_str(), args);
+    }
+    else
+    {
+        p.stop();
+    }
 }
