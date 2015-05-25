@@ -48,7 +48,7 @@ void Options::on_ShiPy_startup_clicked()
     if (!p.isRunning())
     {
         QStringList args;
-        args << QString::fromStdString(config.cget().pyFileName) << "--device_prefix" << QString::fromStdString(config.cget().shipyDevicePrefix);
+        args << "-u" << "-i" << QString::fromStdString(config.cget().pyFileName) << "--device_prefix" << QString::fromStdString(config.cget().shipyDevicePrefix);
         p.start(config.cget().pythonExecutable.c_str(), args);
     }
     else

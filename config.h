@@ -38,7 +38,7 @@ struct ConfigContent : public JSON::FusionStruct <ConfigContent>
                   unsigned short remotePort = 9999, bool startPyServer = false,
                   std::string pyFileName = "shipy.py",
                   std::string shipyDevicePrefix = "",
-                  std::string pythonExecutable = "");
+                  std::string pythonExecutable = "python3");
 };
 
 namespace __INTERNAL

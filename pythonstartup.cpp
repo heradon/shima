@@ -16,6 +16,7 @@ PythonProcess& PythonProcess::getInstance() {
 void PythonProcess::start(QString fileName, QStringList arguments)
 {
     process_->start(fileName, arguments);
+    process_->waitForStarted();
 }
 
 bool PythonProcess::isRunning() const
@@ -30,6 +31,7 @@ void PythonProcess::error(QProcess::ProcessError error)
 
 void PythonProcess::started()
 {
+    qDebug() << "Python Process Started";
     running_ = true;
 }
 
