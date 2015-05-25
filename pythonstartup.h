@@ -24,12 +24,13 @@ public:
     static PythonProcess& getInstance();
     void start(QString fileName, QStringList arguments);
     bool isRunning() const;
+    void started();
+    void stop();
+
 
 private slots:
     void finished(int exitCode, QProcess::ExitStatus exitStatus);
     void error(QProcess::ProcessError error);
-    void started();
-    void stop();
 
 private:
     std::unique_ptr<QProcess> process_;
