@@ -29,8 +29,6 @@ MainWindow::MainWindow(Config cfg, QWidget *parent)
     QString StyleSheet = QLatin1String(File.readAll());
 
     qApp->setStyleSheet(StyleSheet);
-    //setStyleSheet(StyleSheet);
-
 
     set_alarm_status(config.cget().alarmActive);
 
